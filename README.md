@@ -1,6 +1,6 @@
 # Xendit API
 
-Technical assesment for Xendit
+Trial for Xendit
 
 #
 
@@ -34,20 +34,20 @@ $ docker-compose up -d --build
 
 4. migrate PostgreSQL data
 
-    verify node docker (*`xendit_node_xendit_1`*) container is running, verify by running `docker ps -a`
+    verify node docker (*`xendit-trial_node_xendit_1`*) container is running, verify by running `docker ps -a`
 
     ```bash
     $ docker ps -a
 
     CONTAINER ID        IMAGE                 PORTS                    NAMES
-    88d7c9ab3dfb        xendit_node_xendit                             xendit_node_xendit_1
-    421078ab7b46        postgres:11.6         0.0.0.0:5432->5432/tcp   xendit_postgres_1
-    4ac02d653a37        nginx:1.17-alpine     0.0.0.0:3800->80/tcp     xendit_nginx_1
+    88d7c9ab3dfb        xendit_node_xendit                             xendit-trial_node_xendit_1
+    421078ab7b46        postgres:11.6         0.0.0.0:5432->5432/tcp   xendit-trial_postgres_1
+    4ac02d653a37        nginx:1.17-alpine     0.0.0.0:3800->80/tcp     xendit-trial_nginx_1
     ```
 
     execute migration script using docker exec
     ```bash
-    $ docker exec xendit_node_xendit_1 yarn migrate up
+    $ docker exec xendit-trial_node_xendit_1 yarn migrate up
     ```
     replace **<docker_node_name>** if docker name is changed or different.
     ```bash
@@ -79,7 +79,7 @@ Access docs at [http://localhost:3800/api-docs](http://localhost:3800/api-docs)
 
 ## Running Test
 ```bash
-$ docker exec xendit_node_xendit_1 yarn test
+$ docker exec xendit-trial_node_xendit_1 yarn test
 ```
 or replace **<docker_node_name>** if docker name is different.
 ```bash
