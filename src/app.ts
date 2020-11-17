@@ -15,7 +15,7 @@ class App {
         this.middlewares(application.middlewares);
         this.routes(application.controllers);
         // add swagger route
-        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+        // this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     }
 
     public listen() {
