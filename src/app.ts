@@ -1,7 +1,7 @@
 require('dotenv').config();
 import express, { Application } from 'express';
 import swaggerUi from 'swagger-ui-express';
-// import * as swaggerDocument from './swagger.json';
+import * as swaggerDocument from './swagger.json';
 
 interface ApplicationProps { port: number; controllers: any; middlewares: any }
 
@@ -15,7 +15,7 @@ class App {
         this.middlewares(application.middlewares);
         this.routes(application.controllers);
         // add swagger route
-        // this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     }
 
     public listen() {

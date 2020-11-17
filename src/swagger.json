@@ -1,0 +1,404 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Xendit",
+      "description": "Xendit Trial"
+    },
+    "paths": {
+      "/merchants": {
+        "get": {
+          "tags": [
+            "Merchants"
+          ],
+          "summary": "Get all merchants",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "example response": {
+                      "value": [
+                        {
+                          "id": 1,
+                          "name": "customer1",
+                          "notification_key": "customer-unique-token",
+                          "notification_url": "https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c041",
+                          "created_at": "2020-11-16T22:08:07.941Z",
+                          "updated_at": "2020-11-16T22:13:24.550Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/merchants/{merchantId}": {
+        "patch": {
+          "tags": [
+            "Merchants"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "merchantId",
+              "schema": {
+                "type": "integer"
+              },
+              "required": true,
+              "description": "Numeric ID of the user to get"
+            }
+          ],
+          "summary": "Updates a merchants",
+          "description": "Endpoint to update merchants notification url and key",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "example response": {
+                      "value": {
+                        "id": 1,
+                        "name": "merchant1",
+                        "notification_key": "merchant-token",
+                        "notification_url": "https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c041",
+                        "created_at": "2020-11-16T07:32:03.222Z",
+                        "updated_at": "2020-11-16T17:49:32.774Z"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Merchant does not exist",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Merchant not found": {
+                      "value": {
+                        "statusCode": 404,
+                        "errorCode": "NOT_FOUND",
+                        "message": "Data not found."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/notifications/{merchantId}/notify/test": {
+        "post": {
+          "tags": [
+            "Notifications"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "merchantId",
+              "schema": {
+                "type": "integer"
+              },
+              "required": true,
+              "description": "Numeric ID of the user to get"
+            }
+          ],
+          "summary": "Test notification of merchant",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "X-Token": {
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "Merchants unique notification key/token"
+                }
+              },
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "bank transfer": {
+                      "value": {
+                        "amount": 8000,
+                        "transaction_id": "123-123123-1231",
+                        "bank_code": "BNI",
+                        "account_number": "83363719120"
+                      }
+                    },
+                    "Invoice": {
+                      "value": {
+                        "amount": 8000,
+                        "invoice_id": "123-123123-123123",
+                        "bank_code": "BNI",
+                        "Reference_code": "wiejiqejqwe"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Expected parameters are missing",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Bad Request": {
+                      "value": {
+                        "statusCode": 400,
+                        "errorCode": "BAD_REQUEST",
+                        "message": "Expected parameters are missing."
+                      }
+                    },
+                    "Notification URL not set": {
+                      "value": {
+                        "statusCode": 400,
+                        "errorCode": "NOTIFICATION_URL_NOT_SET",
+                        "message": "Merchant Notification URL not set."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Expected parameters are missing",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Not Found": {
+                      "value": {
+                        "statusCode": 404,
+                        "errorCode": "NOT_FOUND",
+                        "message": "Merchant does not exist."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/notifications/{merchantId}/notify": {
+        "post": {
+          "tags": [
+            "Notifications"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "merchantId",
+              "schema": {
+                "type": "integer"
+              },
+              "required": true,
+              "description": "Numeric ID of the user to get"
+            }
+          ],
+          "summary": "To notify merchant with payload",
+          "requestBody": {
+            "description": "A JSON object containing pet information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notification"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "X-Token": {
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "Merchants unique notification key/token"
+                }
+              },
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "bank transfer": {
+                      "value": {
+                        "amount": 8000,
+                        "transaction_id": "123-123123-1231",
+                        "bank_code": "BNI",
+                        "account_number": "83363719120"
+                      }
+                    },
+                    "Invoice": {
+                      "value": {
+                        "amount": 8000,
+                        "invoice_id": "123-123123-123123",
+                        "bank_code": "BNI",
+                        "Reference_code": "wiejiqejqwe"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Expected parameters are missing",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Bad Request": {
+                      "value": {
+                        "statusCode": 400,
+                        "errorCode": "BAD_REQUEST",
+                        "message": "Expected parameters are missing."
+                      }
+                    },
+                    "Idempotency key exists": {
+                      "value": {
+                        "statusCode": 400,
+                        "errorCode": "NOTIFICATION_INVALID",
+                        "message": "Idempotency key already exist."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Merchant does not exists.",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Not Found": {
+                      "value": {
+                        "statusCode": 404,
+                        "errorCode": "NOT_FOUND",
+                        "message": "Merchant does not exist."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/notifications/{notificationId}/retry": {
+        "post": {
+          "tags": [
+            "Notifications"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "notificationId",
+              "schema": {
+                "type": "integer"
+              },
+              "required": true,
+              "description": "ID of notification to retry"
+            }
+          ],
+          "summary": "To retry failed notification",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "X-Token": {
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "Merchants unique notification key/token"
+                }
+              },
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "bank transfer": {
+                      "value": {
+                        "amount": 8000,
+                        "transaction_id": "123-123123-1231",
+                        "bank_code": "BNI",
+                        "account_number": "83363719120"
+                      }
+                    },
+                    "Invoice": {
+                      "value": {
+                        "amount": 8000,
+                        "invoice_id": "123-123123-123123",
+                        "bank_code": "BNI",
+                        "Reference_code": "wiejiqejqwe"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Notification is not valid for retry",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Bad Request": {
+                      "value": {
+                        "statusCode": 400,
+                        "errorCode": "NOTIFICATION_RETRY_INVALID",
+                        "message": "Notification is not valid for retry."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Merchant being notified does not exists",
+              "content": {
+                "application/json": {
+                  "examples": {
+                    "Not Found": {
+                      "value": {
+                        "statusCode": 404,
+                        "errorCode": "NOTIFICATION_NOT_FOUND",
+                        "message": "Resource doesn't exists."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Notification": {
+          "type": "object",
+          "properties": {
+            "notification_type": {
+              "type": "string"
+            },
+            "payload": {
+              "type": "object"
+            }
+          },
+          "example": {
+            "notification_type": "string",
+            "payload": {
+              "amount": 8000,
+              "transaction_id": "123-123123-1231",
+              "bank_code": "BNI",
+              "account_number": "83363719120"
+            }
+          }
+        }
+      }
+    }
+  }
