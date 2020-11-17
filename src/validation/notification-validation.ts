@@ -45,7 +45,7 @@ class NotificationValidation extends AbstractService {
             if (
                 req.body.notification_type === undefined || !NOTIFICATION_TYPES.includes(req.body.notification_type)
             ) {
-                throw new ErrorHandler(400, 'BAD_REQUEST', 'Invalid Request Parameters');
+                throw new ErrorHandler(400, 'BAD_REQUEST', 'Invalid request parameters or notification type doesn\'t exist');
             }
 
             const merchant = await merchantRepository.getMerchantById(req.params.merchantId);

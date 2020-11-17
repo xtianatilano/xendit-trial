@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import { AbstractController } from '../abstract/abstract.controller';
+import { notificationRepository } from '../repositories/notification-repository';
 import { notificationService } from '../services/notification.service';
 import { notificationValidation } from '../validation/notification-validation';
 
@@ -13,6 +14,8 @@ export default class NotificationController extends AbstractController {
     }
 
     public initRoutes() {
+        // endpoint to get last failed notification
+        this.router.get(this.path + '/last-failed', this.getLastFailedNotification.bind(this));
         // endpoint for 3rd party provider to notify merchant
         this.router.post(this.path + '/:merchantId(\\d+)/notify', this.notify.bind(this));
         // endpoint to test merchant notification
@@ -20,6 +23,14 @@ export default class NotificationController extends AbstractController {
         // endpoint to retry failed notifications
         this.router.post(this.path + '/:notificationId(\\d+)/retry', this.retry.bind(this));
     }
+
+    public async getLastFailedNotification (req: Request, res: Response) {
+        try {
+            return this.ok(res, await notificationRepository.getLastFailedNotification());
+        } catch (error) {
+            return this.fail(res, error);
+        }
+    };
 
     /**
      *

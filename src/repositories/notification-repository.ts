@@ -25,6 +25,16 @@ class NotificationRepository {
         }
     };
 
+    async getLastFailedNotification(): Promise<Notification> {
+        try {
+            const result: QueryResult = await pool.query(`SELECT * FROM "notifications" WHERE status = 'failed' LIMIT 1`, []);
+
+            return result.rows[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getNotificationById(notificationId: string | number): Promise<Notification> {
         try {
             const result: QueryResult = await pool.query(`SELECT * FROM "notifications" WHERE id = $1`, [notificationId]);

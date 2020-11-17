@@ -65,5 +65,5 @@ exports.up = (pgm) => {
     })
 
     // initial data for merchants
-    pgm.sql(`INSERT INTO merchants ("name") VALUES ('customer1'), ('customer2'), ('customer3');`)
+    pgm.sql(`INSERT INTO merchants ("name") VALUES ('merchant1'), ('merchant2'), ('merchant2');`)
 }
