@@ -1,6 +1,7 @@
 import request from 'supertest';
 
 const url = 'http://localhost:3000';
+const webhook = 'https://webhook.site/4eb2bc1b-41dc-4892-88a3-8b7c1350ece0';
 const merchantId = 1;
 
 describe('Merchant test notfication scenarios', () => {
@@ -9,11 +10,11 @@ describe('Merchant test notfication scenarios', () => {
         .patch(`/merchants/${merchantId}`)
         .set('Accept', 'application/json')
         .send({
-            notification_url: 'https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c041',
+            notification_url: webhook,
             notification_key: "merchant-unique-token",
         }).expect(200);
 
-        expect(merchant.body.notification_url).toBe('https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c041');
+        expect(merchant.body.notification_url).toBe(webhook);
         expect(merchant.body.notification_key).toBe('merchant-unique-token');
     })
 
@@ -116,11 +117,11 @@ describe('Notification scenarios', () => {
         .patch(`/merchants/${merchantId}`)
         .set('Accept', 'application/json')
         .send({
-            notification_url: 'https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c041',
+            notification_url: webhook,
             notification_key: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
         }).expect(200);
 
-        expect(merchant.body.notification_url).toBe('https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c041');
+        expect(merchant.body.notification_url).toBe(webhook);
     })
 
     it('should error on notification request with missing parameters ', async () => {
