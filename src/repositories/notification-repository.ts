@@ -27,7 +27,9 @@ class NotificationRepository {
 
     async getLastFailedNotification(): Promise<Notification> {
         try {
-            const result: QueryResult = await pool.query(`SELECT * FROM "notifications" WHERE status = 'failed' LIMIT 1`, []);
+            const result: QueryResult = await pool.query(`
+                SELECT * FROM "notifications" WHERE status = 'failed' ORDER BY id DESC LIMIT 1
+            `);
 
             return result.rows[0];
         } catch (error) {
@@ -78,6 +80,24 @@ class NotificationRepository {
                 SET "status" = 'failed', "updated_at" = NOW()
                 WHERE id = $1
             `, [id]);
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    async updateNotificationUrl(req): Promise<Notification> {
+        try {
+            const result = await pool.query(`
+                UPDATE "notifications"
+                SET "notification_url" = $2, "updated_at" = NOW()
+                WHERE id = $1 RETURNING *
+            `, [req.params.notificationId, req.body.notification_url]);
+
+            if (result.rows.length === 0) {
+                throw new ErrorHandler(404, 'NOT_FOUND', 'Data not found.');
+            }
+
+            return result.rows[0];
         } catch (error) {
             throw error;
         }

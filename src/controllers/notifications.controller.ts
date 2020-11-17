@@ -14,6 +14,8 @@ export default class NotificationController extends AbstractController {
     }
 
     public initRoutes() {
+        // endpoint to get updated notification url
+        this.router.patch(this.path + '/:notificationId(\\d+)', this.updateNotificationUrl.bind(this));
         // endpoint to get last failed notification
         this.router.get(this.path + '/last-failed', this.getLastFailedNotification.bind(this));
         // endpoint for 3rd party provider to notify merchant
@@ -27,6 +29,14 @@ export default class NotificationController extends AbstractController {
     public async getLastFailedNotification (req: Request, res: Response) {
         try {
             return this.ok(res, await notificationRepository.getLastFailedNotification());
+        } catch (error) {
+            return this.fail(res, error);
+        }
+    };
+
+    public async updateNotificationUrl (req: Request, res: Response) {
+        try {
+            return this.ok(res, await notificationRepository.updateNotificationUrl(req));
         } catch (error) {
             return this.fail(res, error);
         }

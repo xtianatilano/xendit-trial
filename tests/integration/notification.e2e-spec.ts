@@ -1,10 +1,11 @@
 import request from 'supertest';
+import { pool } from '../../src/database';
 
 const url = 'http://localhost:3000';
 const webhook = 'https://webhook.site/4eb2bc1b-41dc-4892-88a3-8b7c1350ece0';
 const merchantId = 1;
 
-describe('Merchant test notfication scenarios', () => {
+describe('Notification test scenarios', () => {
     it('should updated merchants notification url and key', async () => {
         const merchant = await request(url)
         .patch(`/merchants/${merchantId}`)
@@ -43,7 +44,7 @@ describe('Merchant test notfication scenarios', () => {
         }).expect(400);
     })
 
-    it('should error on notification test if merchant url is not ste', async () => {
+    it('should error on notification test if merchant url is not set', async () => {
         await request(url)
         .post(`/notifications/3/notify/test`)
         .set('Accept', 'application/json')
@@ -91,6 +92,18 @@ describe('Notification retry scenarios', () => {
         await new Promise(resolve => setTimeout(resolve, 60000));
     }, 120000)
 
+    it('should update merchant url to an invalid url', async () => {
+        merchant = await request(url)
+        .patch(`/merchants/${merchantId}`)
+        .set('Accept', 'application/json')
+        .send({
+            notification_url: 'https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c04155512355',
+            notification_key: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        }).expect(200);
+
+        expect(merchant.body.notification_url).toBe('https://webhook.site/52dcefa4-77bc-444d-b0f9-7a605e88c04155512355');
+    })
+
     it('should retry a failed notification', async () => {
         const notification = await request(url)
         .get(`/notifications/last-failed`)
@@ -98,15 +111,17 @@ describe('Notification retry scenarios', () => {
         .expect(200);
 
         await request(url)
+        .patch(`/notifications/${notification.body.id}`)
+        .set('Accept', 'application/json')
+        .send({
+            notification_url: webhook
+        })
+        .expect(200);
+
+        await request(url)
         .post(`/notifications/${notification.body.id}/retry`)
         .set('Accept', 'application/json')
-        .set('X-Idempotency-Key', merchant.body.notification_key)
-        .send({
-            notification_type: 'invoice',
-            payload: {
-                test: 'test'
-            }
-        }).expect(200);
+        .expect(200);
     })
 })
 
